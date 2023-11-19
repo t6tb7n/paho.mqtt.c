@@ -43,9 +43,11 @@
 #  define be64toh(x) OSSwapBigToHostInt64(x)
 #elif defined(__FreeBSD__) || defined(__NetBSD__)
 #  include <sys/endian.h>
-#elif (defined(_WIN32) || defined(_WIN64)) && !defined(NO_USE_RPCRT4_UUID)
-#  pragma comment(lib, "rpcrt4.lib")
-#  include <rpc.h>
+#elif (defined(_WIN32) || defined(_WIN64))
+#  if !defined(NO_USE_RPCRT4_UUID)
+#    pragma comment(lib, "rpcrt4.lib")
+#    include <rpc.h>
+#  endif
 #  if !(defined(__MINGW32__))
 #    define strncasecmp(s1,s2,c) _strnicmp(s1,s2,c)
 #  endif
