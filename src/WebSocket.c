@@ -43,7 +43,7 @@
 #  define be64toh(x) OSSwapBigToHostInt64(x)
 #elif defined(__FreeBSD__) || defined(__NetBSD__)
 #  include <sys/endian.h>
-#elif defined(_WIN32) || defined(_WIN64)
+#elif (defined(_WIN32) || defined(_WIN64)) && !defined(NO_USE_RPCRT4_UUID)
 #  pragma comment(lib, "rpcrt4.lib")
 #  include <rpc.h>
 #  if !(defined(__MINGW32__))
@@ -88,7 +88,7 @@
 
 #define HTTP_PROTOCOL(x) x ? "https" : "http"
 
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !(defined(_WIN32) || defined(_WIN64)) || defined(NO_USE_RPCRT4_UUID)
 #if defined(USE_LIBUUID)
 #include <uuid/uuid.h>
 #else /* if defined(USE_LIBUUID) */
@@ -388,7 +388,7 @@ int WebSocket_connect( networkHandles *net, int ssl, const char *uri)
 	size_t hostname_len;
 	int port = 80;
 	const char *topic = NULL;
-#if defined(_WIN32) || defined(_WIN64)
+#if (defined(_WIN32) || defined(_WIN64)) && !defined(NO_USE_RPCRT4_UUID)
 	UUID uuid;
 #else /* if defined(_WIN32) || defined(_WIN64) */
 	uuid_t uuid;
@@ -405,7 +405,7 @@ int WebSocket_connect( networkHandles *net, int ssl, const char *uri)
 		rc = PAHO_MEMORY_ERROR;
 		goto exit;
 	}
-#if defined(_WIN32) || defined(_WIN64)
+#if (defined(_WIN32) || defined(_WIN64)) && !defined(NO_USE_RPCRT4_UUID)
 	ZeroMemory( &uuid, sizeof(UUID) );
 	UuidCreate( &uuid );
 	Base64_encode( net->websocket_key, 25u, (const b64_data_t*)&uuid, sizeof(UUID) );
